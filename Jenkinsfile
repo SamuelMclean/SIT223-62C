@@ -1,11 +1,5 @@
 pipeline {
     agent any
-    
-    environment {
-        DIRECTORY_PATH = 'path to directory of code being fetched'
-        TESTING_ENVIROMENT = '51P_TEST'
-        PRODUCTION_ENVIROMENT = '51P_PROD'
-    }
 
     stages {
         stage('Build') {
@@ -26,7 +20,9 @@ pipeline {
         stage('Security Scan') {
             steps {
                 echo 'Security check via Fortify'
-                always{
+            }
+            post {
+                always {
                     mail to: "spudoto@gmail.com",
                     subject: "Security Check Completed",
                     body: "Security Check Completed Successfully"
@@ -43,18 +39,18 @@ pipeline {
                 echo 'Deploy to microsoft azure production enviroment'
             }
         }
-        post
-        {
-            success{
-                mail to: "spudoto@gmail.com",
-                subject: "Jenkins Build Post Report",
-                body: "Build completed Successfully"
-            }
-            failure{
-                mail to: "spudoto@gmail.com",
-                subject: "Jenkins Build Post Report",
-                body: "Build Failed"
-            }
+    }
+
+    post {
+        success {
+            mail to: "spudoto@gmail.com",
+            subject: "Jenkins Build Post Report",
+            body: "Build completed Successfully"
+        }
+        failure {
+            mail to: "spudoto@gmail.com",
+            subject: "Jenkins Build Post Report",
+            body: "Build Failed"
         }
     }
 }
